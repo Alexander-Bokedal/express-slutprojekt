@@ -17,7 +17,7 @@ export const getCharacterById = async (req, res) => {
         if (!anime) {
             return res.status(404).json({ error: "Anime not found" });
         }
-        const character = anime.characters.find(char => char._id?.toString() === req.params.characterId);
+        const character = anime.characters.find((char) => char._id?.toString() === req.params.characterId);
         if (!character) {
             return res.status(404).json({ error: "Character not found" });
         }
@@ -25,5 +25,27 @@ export const getCharacterById = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: "Failed to fetch character" });
+    }
+};
+export const updateCharacter = async (req, res) => {
+    try {
+        const anime = await Anime.findById(req.params.animeId);
+        if (!anime) {
+            return res.status(404).json({ error: "Anime not found" });
+        }
+        const character = anime.characters.find((char) => char._id?.toString() === req.params.characterId);
+        if (!character) {
+            return res.status(404).json({ error: "Character not found" });
+        }
+        character.powerLevel = {
+            ...character.powerLevel,
+            name: req.body.name || character.powerLevel?.name,
+            value: req.body.value || character.powerLevel?.value,
+        };
+        await anime.save();
+        res.json(character);
+    }
+    catch (error) {
+        res.status(400).json({ error: "Failed to update character" });
     }
 };

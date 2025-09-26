@@ -14,7 +14,7 @@ export const powerLevels: PowerLevel[] = [
 export const animeData: Anime[] = [
   {
     title: "Dragon Ball Z",
-    genre: "Action/Adventure",
+    genre: ["Action", "Adventure"],
     characters: [
       { name: "Yamcha", powerLevel: { name: "City", value: 3 }, description: "Desert bandit turned martial artist" },
       { name: "Krillin", powerLevel: { name: "City", value: 8 }, description: "Monk martial artist, Goku's best friend" },
@@ -30,7 +30,7 @@ export const animeData: Anime[] = [
   },
   {
     title: "Naruto",
-    genre: "Action/Adventure",
+    genre: ["Action", "Adventure"],
     characters: [
       { name: "Rock Lee", powerLevel: { name: "City", value: 6 }, description: "Taijutsu specialist ninja" },
       { name: "Neji Hyuga", powerLevel: { name: "City", value: 7 }, description: "Byakugan user from Hyuga clan" },
@@ -46,7 +46,7 @@ export const animeData: Anime[] = [
   },
   {
     title: "One Piece",
-    genre: "Adventure/Comedy",
+    genre: ["Adventure", "Comedy"],
     characters: [
       { name: "Usopp", powerLevel: { name: "City", value: 4 }, description: "Sniper of the Straw Hat Pirates" },
       { name: "Nami", powerLevel: { name: "City", value: 5 }, description: "Navigator with weather manipulation" },
@@ -62,7 +62,7 @@ export const animeData: Anime[] = [
   },
   {
     title: "Bleach",
-    genre: "Supernatural/Action",
+    genre: ["Supernatural", "Action"],
     characters: [
       { name: "Chad", powerLevel: { name: "City", value: 6 }, description: "Human with Fullbring powers" },
       { name: "Uryu", powerLevel: { name: "City", value: 7 }, description: "Quincy archer with spirit arrows" },

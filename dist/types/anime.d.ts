@@ -9,6 +9,6 @@ export interface Character {
 }
 export interface Anime {
     title: string;
-    genre: string;
+    genre: string[];
     characters: Character[];
 }

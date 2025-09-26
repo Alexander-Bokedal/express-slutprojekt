@@ -40,6 +40,7 @@ export declare const characterSchema: mongoose.Schema<any, mongoose.Model<any, a
     __v: number;
 }>;
 export declare const animeSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -63,8 +64,8 @@ export declare const animeSchema: mongoose.Schema<any, mongoose.Model<any, any, 
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -88,8 +89,8 @@ export declare const animeSchema: mongoose.Schema<any, mongoose.Model<any, any, 
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -113,7 +114,6 @@ export declare const animeSchema: mongoose.Schema<any, mongoose.Model<any, any, 
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }> & {
     _id: mongoose.Types.ObjectId;
 } & {
@@ -198,6 +198,7 @@ export declare const PowerLevels: mongoose.Model<{
     __v: number;
 }>>;
 export declare const Anime: mongoose.Model<{
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -221,8 +222,8 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }, {}, {}, {}, mongoose.Document<unknown, {}, {
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -246,8 +247,8 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }, {}, mongoose.DefaultSchemaOptions> & {
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -271,12 +272,12 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 } & {
     _id: mongoose.Types.ObjectId;
 } & {
     __v: number;
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -300,8 +301,8 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -325,8 +326,8 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
+    genre: string[];
     characters: mongoose.Types.DocumentArray<{
         name?: string | null | undefined;
         powerLevel?: {
@@ -350,7 +351,6 @@ export declare const Anime: mongoose.Model<{
         description?: string | null | undefined;
     }>;
     title?: string | null | undefined;
-    genre?: string | null | undefined;
 }> & {
     _id: mongoose.Types.ObjectId;
 } & {

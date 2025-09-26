@@ -1,10 +1,36 @@
+import express from "express";
 import mongoose from "mongoose";
-import { Anime } from "./models/schemas";
+import { Server } from "http";
+import routes from "./routes/index";
+import { errorHandler } from "./middleware/errorHandler";
+import { config } from "./config/environment";
+import { gracefulShutdown } from "./utils/gracefulShutdown";
+const app = express();
+let server: Server;
 
-main().catch((err) => console.log(err));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/animes");
-  const animes = await Anime.find({});
-  console.log("These are you animes", JSON.stringify(animes, null, 2));
+app.use(routes);
+
+app.use(errorHandler);
+
+async function startServer() {
+  try {
+    await mongoose.connect(config.mongoUrl);
+    console.log("Connected to MongoDB");
+
+    server = app.listen(config.port, () => {
+      console.log(`Server running on port ${config.port}`);
+      console.log(`API available at http://localhost:${config.port}/api`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 }
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM", server));
+process.on("SIGINT", () => gracefulShutdown("SIGINT", server));
+
+startServer();

@@ -11,7 +11,7 @@ export const characterSchema = new Schema({
 });
 export const animeSchema = new Schema({
     title: String,
-    genre: String,
+    genre: [String],
     characters: [characterSchema],
 });
 export const Characters = mongoose.model("Characters", characterSchema);
