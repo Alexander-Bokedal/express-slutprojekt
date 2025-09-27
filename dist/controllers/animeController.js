@@ -1,7 +1,7 @@
-import { Anime } from "../models/schemas";
+import { animeService } from "../services/animeService";
 export const getAllAnimes = async (req, res) => {
     try {
-        const animes = await Anime.find({});
+        const animes = await animeService.getAllAnimes();
         res.json(animes);
     }
     catch (error) {
@@ -10,7 +10,7 @@ export const getAllAnimes = async (req, res) => {
 };
 export const getAnimeById = async (req, res) => {
     try {
-        const anime = await Anime.findById(req.params.id);
+        const anime = await animeService.getAnimeById(req.params.id);
         if (!anime) {
             return res.status(404).json({ error: "Anime not found" });
         }
@@ -23,7 +23,7 @@ export const getAnimeById = async (req, res) => {
 export const getAnimeByName = async (req, res) => {
     try {
         console.log(req.params.title);
-        const anime = await Anime.findOne({ title: req.params.title });
+        const anime = await animeService.getAnimeByTitle(req.params.title);
         if (!anime) {
             return res.status(404).json({ error: "Anime not found" });
         }
@@ -35,8 +35,7 @@ export const getAnimeByName = async (req, res) => {
 };
 export const createAnime = async (req, res) => {
     try {
-        const anime = new Anime(req.body);
-        await anime.save();
+        const anime = await animeService.createAnime(req.body);
         res.status(201).json(anime);
     }
     catch (error) {
@@ -45,23 +44,7 @@ export const createAnime = async (req, res) => {
 };
 export const getMetadata = async (req, res) => {
     try {
-        const animes = await Anime.find({});
-        const totalAnimes = animes.length;
-        const totalCharacters = animes.reduce((sum, anime) => sum + anime.characters.length, 0);
-        const avgCharactersPerAnime = totalAnimes > 0 ? totalCharacters / totalAnimes : 0;
-        const genreDistribution = animes.reduce((acc, anime) => {
-            const genres = anime.genre || [];
-            genres.forEach(genre => {
-                acc[genre] = (acc[genre] || 0) + 1;
-            });
-            return acc;
-        }, {});
-        const metadata = {
-            totalAnimes,
-            totalCharacters,
-            avgCharactersPerAnime: Math.round(avgCharactersPerAnime * 100) / 100,
-            genreDistribution
-        };
+        const metadata = await animeService.getAnimeMetadata();
         res.json(metadata);
     }
     catch (error) {

@@ -1,60 +1,48 @@
-import { Request, Response } from "express";
-import { Anime } from "../models/schemas";
+import { Request, Response } from "express"
+import { characterService } from "../services/characterService"
 
 export const getCharactersByAnime = async (req: Request, res: Response) => {
   try {
-    const anime = await Anime.findById(req.params.animeId);
-    if (!anime) {
-      return res.status(404).json({ error: "Anime not found" });
-    }
-    res.json(anime.characters);
+    const characters = await characterService.getCharactersByAnimeId(req.params.animeId)
+    res.json(characters)
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch characters" });
+    if (error instanceof Error && error.message === "Anime not found") {
+      return res.status(404).json({ error: "Anime not found" })
+    }
+    res.status(500).json({ error: "Failed to fetch characters" })
   }
-};
+}
 
 export const getCharacterById = async (req: Request, res: Response) => {
   try {
-    const anime = await Anime.findById(req.params.animeId);
-    if (!anime) {
-      return res.status(404).json({ error: "Anime not found" });
-    }
-
-    const character = anime.characters.find(
-      (char) => char._id?.toString() === req.params.characterId,
-    );
-    if (!character) {
-      return res.status(404).json({ error: "Character not found" });
-    }
-
-    res.json(character);
+    const character = await characterService.getCharacterById(req.params.animeId, req.params.characterId)
+    res.json(character)
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch character" });
+    if (error instanceof Error && error.message === "Anime not found") {
+      return res.status(404).json({ error: "Anime not found" })
+    }
+    if (error instanceof Error && error.message === "Character not found") {
+      return res.status(404).json({ error: "Character not found" })
+    }
+    res.status(500).json({ error: "Failed to fetch character" })
   }
-};
+}
 
 export const updateCharacter = async (req: Request, res: Response) => {
   try {
-    const anime = await Anime.findById(req.params.animeId);
-    if (!anime) {
-      return res.status(404).json({ error: "Anime not found" });
-    }
-
-    const character = anime.characters.find(
-      (char) => char._id?.toString() === req.params.characterId,
-    );
-    if (!character) {
-      return res.status(404).json({ error: "Character not found" });
-    }
-
-    character.powerLevel = {
-      ...character.powerLevel,
-      name: req.body.name || character.powerLevel?.name,
-      value: req.body.value || character.powerLevel?.value,
-    };
-    await anime.save();
-    res.json(character);
+    const character = await characterService.updateCharacter(
+      req.params.animeId, 
+      req.params.characterId, 
+      { name: req.body.name, value: req.body.value }
+    )
+    res.json(character)
   } catch (error) {
-    res.status(400).json({ error: "Failed to update character" });
+    if (error instanceof Error && error.message === "Anime not found") {
+      return res.status(404).json({ error: "Anime not found" })
+    }
+    if (error instanceof Error && error.message === "Character not found") {
+      return res.status(404).json({ error: "Character not found" })
+    }
+    res.status(400).json({ error: "Failed to update character" })
   }
-};
+}

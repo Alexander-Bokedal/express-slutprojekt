@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { Anime } from "../models/schemas";
+import { animeService } from "../services/animeService";
 
 export const getAllAnimes = async (req: Request, res: Response) => {
   try {
-    const animes = await Anime.find({});
+    const animes = await animeService.getAllAnimes();
     res.json(animes);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch animes" });
@@ -12,7 +12,7 @@ export const getAllAnimes = async (req: Request, res: Response) => {
 
 export const getAnimeById = async (req: Request, res: Response) => {
   try {
-    const anime = await Anime.findById(req.params.id);
+    const anime = await animeService.getAnimeById(req.params.id);
     if (!anime) {
       return res.status(404).json({ error: "Anime not found" });
     }
@@ -23,9 +23,7 @@ export const getAnimeById = async (req: Request, res: Response) => {
 };
 export const getAnimeByName = async (req: Request, res: Response) => {
   try {
-    console.log(req.params.title);
-
-    const anime = await Anime.findOne({ title: req.params.title });
+    const anime = await animeService.getAnimeByTitle(req.params.title);
     if (!anime) {
       return res.status(404).json({ error: "Anime not found" });
     }
@@ -37,8 +35,7 @@ export const getAnimeByName = async (req: Request, res: Response) => {
 
 export const createAnime = async (req: Request, res: Response) => {
   try {
-    const anime = new Anime(req.body);
-    await anime.save();
+    const anime = await animeService.createAnime(req.body);
     res.status(201).json(anime);
   } catch (error) {
     res.status(400).json({ error: "Failed to create anime" });
@@ -47,29 +44,9 @@ export const createAnime = async (req: Request, res: Response) => {
 
 export const getMetadata = async (req: Request, res: Response) => {
   try {
-    const animes = await Anime.find({})
-    
-    const totalAnimes = animes.length
-    const totalCharacters = animes.reduce((sum, anime) => sum + anime.characters.length, 0)
-    const avgCharactersPerAnime = totalAnimes > 0 ? totalCharacters / totalAnimes : 0
-    
-    const genreDistribution = animes.reduce((acc, anime) => {
-      const genres = anime.genre || []
-      genres.forEach(genre => {
-        acc[genre] = (acc[genre] || 0) + 1
-      })
-      return acc
-    }, {} as Record<string, number>)
-
-    const metadata = {
-      totalAnimes,
-      totalCharacters,
-      avgCharactersPerAnime: Math.round(avgCharactersPerAnime * 100) / 100,
-      genreDistribution
-    }
-
-    res.json(metadata)
+    const metadata = await animeService.getAnimeMetadata();
+    res.json(metadata);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch metadata" })
+    res.status(500).json({ error: "Failed to fetch metadata" });
   }
 };
