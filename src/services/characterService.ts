@@ -1,59 +1,47 @@
-import { Anime } from "../models/schemas";
+import { ICharacterRepository } from "../repositories/interfaces/ICharacterRepository"
+import { MongoCharacterRepository } from "../repositories/implementations/MongoCharacterRepository"
+import { Character } from "../domain/models"
 
-export class CharacterService {
-  async getCharactersByAnimeId(animeId: string) {
-    const anime = await Anime.findById(animeId);
-    if (!anime) {
-      throw new Error("Anime not found");
+export function createCharacterService(repository?: ICharacterRepository) {
+  const repo = repository || new MongoCharacterRepository()
+  
+  return {
+    async getCharactersByAnimeId(animeId: string): Promise<Character[]> {
+      return await repo.findByAnimeId(animeId)
+    },
+
+    async getCharacterById(animeId: string, characterId: string): Promise<Character | null> {
+      return await repo.findById(animeId, characterId)
+    },
+
+    async updateCharacter(
+      animeId: string,
+      characterId: string,
+      updates: { name?: string; value?: number },
+    ): Promise<Character | null> {
+      const characterUpdates: Partial<Character> = {}
+      
+      if (updates.name) {
+        characterUpdates.name = updates.name
+      }
+      
+      if (updates.value !== undefined) {
+        characterUpdates.powerLevel = { name: "", value: updates.value }
+      }
+
+      return await repo.update(animeId, characterId, characterUpdates)
+    },
+
+    async createCharacter(animeId: string, characterData: Omit<Character, "id">): Promise<Character> {
+      return await repo.create(animeId, characterData)
+    },
+
+    async deleteCharacter(animeId: string, characterId: string): Promise<boolean> {
+      return await repo.delete(animeId, characterId)
     }
-    return anime.characters;
-  }
-
-  async getCharacterById(animeId: string, characterId: string) {
-    const anime = await Anime.findById(animeId);
-    if (!anime) {
-      throw new Error("Anime not found");
-    }
-
-    const character = this.findCharacterInAnime(anime, characterId);
-    if (!character) {
-      throw new Error("Character not found");
-    }
-
-    return character;
-  }
-
-  async updateCharacter(
-    animeId: string,
-    characterId: string,
-    updates: { name?: string; value?: number },
-  ) {
-    const anime = await Anime.findById(animeId);
-    if (!anime) {
-      throw new Error("Anime not found");
-    }
-
-    const character = this.findCharacterInAnime(anime, characterId);
-    if (!character) {
-      throw new Error("Character not found");
-    }
-
-    character.powerLevel = {
-      ...character.powerLevel,
-      name: updates.name || character.powerLevel?.name,
-      value: updates.value || character.powerLevel?.value,
-    };
-
-    await anime.save();
-    return character;
-  }
-
-  private findCharacterInAnime(anime: any, characterId: string) {
-    return anime.characters.find(
-      (char: any) => char._id?.toString() === characterId,
-    );
   }
 }
 
-export const characterService = new CharacterService();
+export const characterService = createCharacterService()
+export type CharacterService = ReturnType<typeof createCharacterService>
 

@@ -1,58 +1,32 @@
-import { Anime } from "../models/schemas";
-import { Anime as AnimeInterface } from "../types/anime";
+import { IAnimeRepository } from "../repositories/interfaces/IAnimeRepository"
+import { MongoAnimeRepository } from "../repositories/implementations/MongoAnimeRepository"
+import { Anime, AnimeMetadata } from "../domain/models"
 
-export class AnimeService {
-  async getAllAnimes() {
-    return await Anime.find({});
-  }
+export function createAnimeService(repository?: IAnimeRepository) {
+  const repo = repository || new MongoAnimeRepository()
+  
+  return {
+    async getAllAnimes(): Promise<Anime[]> {
+      return await repo.findAll()
+    },
 
-  async getAnimeById(id: string) {
-    return await Anime.findById(id);
-  }
+    async getAnimeById(id: string): Promise<Anime | null> {
+      return await repo.findById(id)
+    },
 
-  async getAnimeByTitle(title: string) {
-    return await Anime.findOne({ title });
-  }
+    async getAnimeByTitle(title: string): Promise<Anime | null> {
+      return await repo.findByTitle(title)
+    },
 
-  async createAnime(animeData: AnimeInterface) {
-    const anime = new Anime(animeData);
-    return await anime.save();
-  }
+    async createAnime(animeData: Omit<Anime, "id">): Promise<Anime> {
+      return await repo.create(animeData)
+    },
 
-  async getAnimeMetadata() {
-    const animes = await Anime.find({});
-
-    const totalAnimes = animes.length;
-    const totalCharacters = animes.reduce(
-      (sum, anime) => sum + anime.characters.length,
-      0,
-    );
-    const avgCharactersPerAnime =
-      totalAnimes > 0 ? totalCharacters / totalAnimes : 0;
-
-    const genreDistribution = this.calculateGenreDistribution(animes);
-
-    return {
-      totalAnimes,
-      totalCharacters,
-      avgCharactersPerAnime: Math.round(avgCharactersPerAnime * 100) / 100,
-      genreDistribution,
-    };
-  }
-
-  private calculateGenreDistribution(animes: any[]) {
-    return animes.reduce(
-      (acc, anime) => {
-        const genres = anime.genre || [];
-        genres.forEach((genre: string) => {
-          acc[genre] = (acc[genre] || 0) + 1;
-        });
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    async getAnimeMetadata(): Promise<AnimeMetadata> {
+      return await repo.getMetadata()
+    }
   }
 }
 
-export const animeService = new AnimeService();
-
+export const animeService = createAnimeService()
+export type AnimeService = ReturnType<typeof createAnimeService>

@@ -22,7 +22,6 @@ export const getAnimeById = async (req, res) => {
 };
 export const getAnimeByName = async (req, res) => {
     try {
-        console.log(req.params.title);
         const anime = await animeService.getAnimeByTitle(req.params.title);
         if (!anime) {
             return res.status(404).json({ error: "Anime not found" });
